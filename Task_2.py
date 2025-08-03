@@ -1,22 +1,4 @@
-# Deep Learning Image Classification using TensorFlow/Keras
-# CIFAR-10 Dataset Classification with Convolutional Neural Network
-
-"""
-PROJECT OVERVIEW:
-This project implements a deep learning model for image classification using the CIFAR-10 dataset.
-The CIFAR-10 dataset contains 60,000 32x32 color images in 10 classes:
-- Airplane, Automobile, Bird, Cat, Deer, Dog, Frog, Horse, Ship, Truck
-
-OBJECTIVES:
-1. Build a Convolutional Neural Network (CNN) for image classification
-2. Train the model on CIFAR-10 dataset
-3. Evaluate model performance with metrics and visualizations
-4. Demonstrate practical deep learning implementation
-"""
-
-# =============================================================================
-# STEP 1: IMPORT LIBRARIES AND SETUP
-# =============================================================================
+# Task 2: Deep Learning Image Classification with CIFAR-10 Dataset
 
 print("="*70)
 print("DEEP LEARNING IMAGE CLASSIFICATION PROJECT")

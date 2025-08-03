@@ -1,21 +1,4 @@
-# Production Optimization using Linear Programming
-# Business Problem: Manufacturing Company Product Mix Optimization
-
-"""
-BUSINESS PROBLEM SCENARIO:
-TechManufacturing Inc. produces three types of electronic devices:
-- Smartphones (S)
-- Tablets (T) 
-- Laptops (L)
-
-The company wants to maximize profit while considering:
-- Limited production capacity
-- Material constraints
-- Labor hour limitations
-- Market demand constraints
-
-OBJECTIVE: Determine the optimal production mix to maximize profit
-"""
+# Task 4: Production Optimization Using Linear Programming
 
 # Import required libraries
 import pulp
