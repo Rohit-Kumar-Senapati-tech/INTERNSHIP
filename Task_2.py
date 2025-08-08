@@ -1,9 +1,9 @@
 # Task 2: Deep Learning Image Classification with CIFAR-10 Dataset
 
-print("="*70)
+print("=" * 70)
 print("DEEP LEARNING IMAGE CLASSIFICATION PROJECT")
 print("CIFAR-10 Dataset with Convolutional Neural Network")
-print("="*70)
+print("=" * 70)
 
 # Core libraries
 import numpy as np
@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 import warnings
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
 
 # TensorFlow and Keras imports
 try:
@@ -21,6 +22,7 @@ try:
     from keras.datasets import cifar10
     from keras.utils import to_categorical
     from keras.preprocessing.image import ImageDataGenerator
+
     print("✅ TensorFlow imported successfully!")
     print(f"TensorFlow version: {tf.__version__}")
 except ImportError as e:
@@ -53,8 +55,18 @@ print("Loading CIFAR-10 dataset...")
 (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
 # Class names for CIFAR-10
-class_names = ['Airplane', 'Automobile', 'Bird', 'Cat', 'Deer', 
-               'Dog', 'Frog', 'Horse', 'Ship', 'Truck']
+class_names = [
+    "Airplane",
+    "Automobile",
+    "Bird",
+    "Cat",
+    "Deer",
+    "Dog",
+    "Frog",
+    "Horse",
+    "Ship",
+    "Truck",
+]
 
 print("Dataset loaded successfully!")
 print(f"Training images shape: {x_train.shape}")
@@ -68,7 +80,9 @@ print(f"Image dimensions: {x_train.shape[1]}x{x_train.shape[2]}x{x_train.shape[3
 print("\nClass Distribution in Training Set:")
 unique, counts = np.unique(y_train, return_counts=True)
 for i, (class_id, count) in enumerate(zip(unique, counts)):
-    print(f"  {class_names[class_id]:<12}: {count:,} images ({count/len(y_train)*100:.1f}%)")
+    print(
+        f"  {class_names[class_id]:<12}: {count:,} images ({count/len(y_train)*100:.1f}%)"
+    )
 
 # =============================================================================
 # STEP 3: DATA PREPROCESSING
@@ -79,11 +93,13 @@ print("-" * 50)
 
 # Normalize pixel values to [0, 1] range
 print("Normalizing pixel values...")
-x_train_normalized = x_train.astype('float32') / 255.0
-x_test_normalized = x_test.astype('float32') / 255.0
+x_train_normalized = x_train.astype("float32") / 255.0
+x_test_normalized = x_test.astype("float32") / 255.0
 
 print(f"Original pixel range: [{x_train.min()}, {x_train.max()}]")
-print(f"Normalized pixel range: [{x_train_normalized.min():.3f}, {x_train_normalized.max():.3f}]")
+print(
+    f"Normalized pixel range: [{x_train_normalized.min():.3f}, {x_train_normalized.max():.3f}]"
+)
 
 # Convert labels to categorical (one-hot encoding)
 print("Converting labels to categorical format...")
@@ -104,7 +120,7 @@ datagen = ImageDataGenerator(
     height_shift_range=0.1,
     horizontal_flip=True,
     zoom_range=0.1,
-    fill_mode='nearest'
+    fill_mode="nearest",
 )
 
 print("Data augmentation configured:")
@@ -120,53 +136,60 @@ print("  - Zoom: ±10%")
 print(f"\nSTEP 3: CONVOLUTIONAL NEURAL NETWORK DESIGN")
 print("-" * 50)
 
+
 def create_cnn_model(input_shape, num_classes):
     """
     Create a Convolutional Neural Network for image classification
-    
+
     Fixed Architecture for CIFAR-10 (32x32 images):
     - 3 Convolutional blocks with proper spatial dimension handling
     - Batch normalization and dropout for regularization
     - Global average pooling to reduce parameters
     - Dense layers for classification
     """
-    
-    model = models.Sequential([
-        # First Convolutional Block
-        layers.Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=input_shape, name='conv1'),
-        layers.BatchNormalization(name='bn1'),
-        layers.Conv2D(32, (3, 3), activation='relu', padding='same', name='conv2'),
-        layers.MaxPooling2D((2, 2), name='pool1'),  # 32x32 -> 16x16
-        layers.Dropout(0.25, name='drop1'),
-        
-        # Second Convolutional Block
-        layers.Conv2D(64, (3, 3), activation='relu', padding='same', name='conv3'),
-        layers.BatchNormalization(name='bn2'),
-        layers.Conv2D(64, (3, 3), activation='relu', padding='same', name='conv4'),
-        layers.MaxPooling2D((2, 2), name='pool2'),  # 16x16 -> 8x8
-        layers.Dropout(0.25, name='drop2'),
-        
-        # Third Convolutional Block
-        layers.Conv2D(128, (3, 3), activation='relu', padding='same', name='conv5'),
-        layers.BatchNormalization(name='bn3'),
-        layers.Conv2D(128, (3, 3), activation='relu', padding='same', name='conv6'),
-        layers.MaxPooling2D((2, 2), name='pool3'),  # 8x8 -> 4x4
-        layers.Dropout(0.25, name='drop3'),
-        
-        # Optional Fourth Block for deeper features
-        layers.Conv2D(256, (3, 3), activation='relu', padding='same', name='conv7'),
-        layers.BatchNormalization(name='bn5'),
-        layers.Dropout(0.25, name='drop5'),
-        
-        # Classification Head
-        layers.GlobalAveragePooling2D(name='global_pool'),  # 4x4x256 -> 256
-        layers.Dense(512, activation='relu', name='dense1'),
-        layers.BatchNormalization(name='bn4'),
-        layers.Dropout(0.5, name='drop4'),
-        layers.Dense(num_classes, activation='softmax', name='output')
-    ])
-    
+
+    model = models.Sequential(
+        [
+            # First Convolutional Block
+            layers.Conv2D(
+                32,
+                (3, 3),
+                activation="relu",
+                padding="same",
+                input_shape=input_shape,
+                name="conv1",
+            ),
+            layers.BatchNormalization(name="bn1"),
+            layers.Conv2D(32, (3, 3), activation="relu", padding="same", name="conv2"),
+            layers.MaxPooling2D((2, 2), name="pool1"),  # 32x32 -> 16x16
+            layers.Dropout(0.25, name="drop1"),
+            # Second Convolutional Block
+            layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="conv3"),
+            layers.BatchNormalization(name="bn2"),
+            layers.Conv2D(64, (3, 3), activation="relu", padding="same", name="conv4"),
+            layers.MaxPooling2D((2, 2), name="pool2"),  # 16x16 -> 8x8
+            layers.Dropout(0.25, name="drop2"),
+            # Third Convolutional Block
+            layers.Conv2D(128, (3, 3), activation="relu", padding="same", name="conv5"),
+            layers.BatchNormalization(name="bn3"),
+            layers.Conv2D(128, (3, 3), activation="relu", padding="same", name="conv6"),
+            layers.MaxPooling2D((2, 2), name="pool3"),  # 8x8 -> 4x4
+            layers.Dropout(0.25, name="drop3"),
+            # Optional Fourth Block for deeper features
+            layers.Conv2D(256, (3, 3), activation="relu", padding="same", name="conv7"),
+            layers.BatchNormalization(name="bn5"),
+            layers.Dropout(0.25, name="drop5"),
+            # Classification Head
+            layers.GlobalAveragePooling2D(name="global_pool"),  # 4x4x256 -> 256
+            layers.Dense(512, activation="relu", name="dense1"),
+            layers.BatchNormalization(name="bn4"),
+            layers.Dropout(0.5, name="drop4"),
+            layers.Dense(num_classes, activation="softmax", name="output"),
+        ]
+    )
+
     return model
+
 
 # Create the model
 input_shape = (32, 32, 3)  # CIFAR-10 image dimensions
@@ -178,7 +201,9 @@ model.summary()
 
 # Count total parameters
 total_params = model.count_params()
-trainable_params = sum([tf.keras.backend.count_params(w) for w in model.trainable_weights])
+trainable_params = sum(
+    [tf.keras.backend.count_params(w) for w in model.trainable_weights]
+)
 print(f"\nModel Statistics:")
 print(f"  Total parameters: {total_params:,}")
 print(f"  Trainable parameters: {trainable_params:,}")
@@ -199,16 +224,17 @@ try:
     # Try to use top_k_categorical_accuracy for newer versions
     model.compile(
         optimizer=optimizer,
-        loss='categorical_crossentropy',
-        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=3, name='top_3_accuracy')]
+        loss="categorical_crossentropy",
+        metrics=[
+            "accuracy",
+            tf.keras.metrics.TopKCategoricalAccuracy(k=3, name="top_3_accuracy"),
+        ],
     )
     metrics_used = "Accuracy, Top-3 accuracy"
 except:
     # Fallback to basic metrics for compatibility
     model.compile(
-        optimizer=optimizer,
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
+        optimizer=optimizer, loss="categorical_crossentropy", metrics=["accuracy"]
     )
     metrics_used = "Accuracy"
 
@@ -221,28 +247,16 @@ print(f"  Metrics: {metrics_used}")
 callbacks_list = [
     # Reduce learning rate when loss plateaus
     callbacks.ReduceLROnPlateau(
-        monitor='val_loss',
-        factor=0.5,
-        patience=5,
-        min_lr=1e-7,
-        verbose=1
+        monitor="val_loss", factor=0.5, patience=5, min_lr=1e-7, verbose=1
     ),
-    
     # Early stopping to prevent overfitting
     callbacks.EarlyStopping(
-        monitor='val_loss',
-        patience=10,
-        restore_best_weights=True,
-        verbose=1
+        monitor="val_loss", patience=10, restore_best_weights=True, verbose=1
     ),
-    
     # Save best model
     callbacks.ModelCheckpoint(
-        'best_cifar10_model.h5',
-        monitor='val_accuracy',
-        save_best_only=True,
-        verbose=1
-    )
+        "best_cifar10_model.h5", monitor="val_accuracy", save_best_only=True, verbose=1
+    ),
 ]
 
 print("Training callbacks configured:")
@@ -280,7 +294,7 @@ history = model.fit(
     epochs=epochs,
     validation_data=(x_test_normalized, y_test_categorical),
     callbacks=callbacks_list,
-    verbose=1
+    verbose=1,
 )
 
 print(f"Training completed at {datetime.now().strftime('%H:%M:%S')}")
@@ -303,7 +317,9 @@ if len(test_results) > 2:
     print(f"Test Results:")
     print(f"  Test Loss: {test_loss:.4f}")
     print(f"  Test Accuracy: {test_accuracy:.4f} ({test_accuracy*100:.2f}%)")
-    print(f"  Test Top-3 Accuracy: {test_top3_accuracy:.4f} ({test_top3_accuracy*100:.2f}%)")
+    print(
+        f"  Test Top-3 Accuracy: {test_top3_accuracy:.4f} ({test_top3_accuracy*100:.2f}%)"
+    )
 else:
     test_top3_accuracy = None
     print(f"Test Results:")
@@ -325,7 +341,9 @@ print(f"\nPer-Class Performance:")
 print(f"{'Class':<12} {'Precision':<10} {'Recall':<10} {'F1-Score':<10} {'Support':<8}")
 print("-" * 55)
 for i, class_name in enumerate(class_names):
-    print(f"{class_name:<12} {precision[i]:<10.3f} {recall[i]:<10.3f} {f1[i]:<10.3f} {support[i]:<8}")
+    print(
+        f"{class_name:<12} {precision[i]:<10.3f} {recall[i]:<10.3f} {f1[i]:<10.3f} {support[i]:<8}"
+    )
 
 # Overall metrics
 macro_precision = np.mean(precision)
@@ -345,81 +363,89 @@ print(f"\nSTEP 7: CREATING VISUALIZATIONS")
 print("-" * 50)
 
 # Set up the plotting style
-plt.style.use('default')
-plt.rcParams['figure.figsize'] = (15, 10)
+plt.style.use("default")
+plt.rcParams["figure.figsize"] = (15, 10)
 
 # Create a comprehensive visualization with 4x4 grid (FIXED)
 fig = plt.figure(figsize=(20, 16))
 
 # 1. Training History
 plt.subplot(4, 4, 1)
-plt.plot(history.history['accuracy'], label='Training Accuracy', linewidth=2)
-plt.plot(history.history['val_accuracy'], label='Validation Accuracy', linewidth=2)
-plt.title('Model Accuracy Over Time', fontsize=14, fontweight='bold')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
+plt.plot(history.history["accuracy"], label="Training Accuracy", linewidth=2)
+plt.plot(history.history["val_accuracy"], label="Validation Accuracy", linewidth=2)
+plt.title("Model Accuracy Over Time", fontsize=14, fontweight="bold")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
 plt.legend()
 plt.grid(True, alpha=0.3)
 
 plt.subplot(4, 4, 2)
-plt.plot(history.history['loss'], label='Training Loss', linewidth=2, color='red')
-plt.plot(history.history['val_loss'], label='Validation Loss', linewidth=2, color='orange')
-plt.title('Model Loss Over Time', fontsize=14, fontweight='bold')
-plt.xlabel('Epoch')
-plt.ylabel('Loss')
+plt.plot(history.history["loss"], label="Training Loss", linewidth=2, color="red")
+plt.plot(
+    history.history["val_loss"], label="Validation Loss", linewidth=2, color="orange"
+)
+plt.title("Model Loss Over Time", fontsize=14, fontweight="bold")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
 plt.legend()
 plt.grid(True, alpha=0.3)
 
 # 2. Confusion Matrix (spanning 2 positions)
 plt.subplot(4, 4, (3, 4))
 cm = confusion_matrix(y_true, y_pred)
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
-            xticklabels=class_names, yticklabels=class_names)
-plt.title('Confusion Matrix', fontsize=14, fontweight='bold')
-plt.xlabel('Predicted Label')
-plt.ylabel('True Label')
+sns.heatmap(
+    cm,
+    annot=True,
+    fmt="d",
+    cmap="Blues",
+    xticklabels=class_names,
+    yticklabels=class_names,
+)
+plt.title("Confusion Matrix", fontsize=14, fontweight="bold")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
 plt.xticks(rotation=45)
 plt.yticks(rotation=0)
 
 # 3. Per-class Performance Bar Chart (spanning 2 positions)
 plt.subplot(4, 4, (5, 6))
 x_pos = np.arange(len(class_names))
-plt.bar(x_pos - 0.2, precision, 0.2, label='Precision', alpha=0.8)
-plt.bar(x_pos, recall, 0.2, label='Recall', alpha=0.8)
-plt.bar(x_pos + 0.2, f1, 0.2, label='F1-Score', alpha=0.8)
-plt.xlabel('Classes')
-plt.ylabel('Score')
-plt.title('Per-Class Performance Metrics', fontsize=14, fontweight='bold')
+plt.bar(x_pos - 0.2, precision, 0.2, label="Precision", alpha=0.8)
+plt.bar(x_pos, recall, 0.2, label="Recall", alpha=0.8)
+plt.bar(x_pos + 0.2, f1, 0.2, label="F1-Score", alpha=0.8)
+plt.xlabel("Classes")
+plt.ylabel("Score")
+plt.title("Per-Class Performance Metrics", fontsize=14, fontweight="bold")
 plt.xticks(x_pos, class_names, rotation=45)
 plt.legend()
 plt.grid(True, alpha=0.3)
 
 # 4. Learning Rate Schedule (if available)
-if 'lr' in history.history:
+if "lr" in history.history:
     plt.subplot(4, 4, 7)
-    plt.plot(history.history['lr'])
-    plt.title('Learning Rate Schedule', fontsize=12, fontweight='bold')
-    plt.xlabel('Epoch')
-    plt.ylabel('Learning Rate')
-    plt.yscale('log')
+    plt.plot(history.history["lr"])
+    plt.title("Learning Rate Schedule", fontsize=12, fontweight="bold")
+    plt.xlabel("Epoch")
+    plt.ylabel("Learning Rate")
+    plt.yscale("log")
     plt.grid(True, alpha=0.3)
 
 # 5. Top-3 Accuracy (if available) or Validation Accuracy
 plt.subplot(4, 4, 8)
-if 'top_3_accuracy' in history.history:
-    plt.plot(history.history['top_3_accuracy'], label='Training Top-3')
-    if 'val_top_3_accuracy' in history.history:
-        plt.plot(history.history['val_top_3_accuracy'], label='Validation Top-3')
-    plt.title('Top-3 Accuracy Over Time', fontsize=12, fontweight='bold')
-    plt.xlabel('Epoch')
-    plt.ylabel('Top-3 Accuracy')
+if "top_3_accuracy" in history.history:
+    plt.plot(history.history["top_3_accuracy"], label="Training Top-3")
+    if "val_top_3_accuracy" in history.history:
+        plt.plot(history.history["val_top_3_accuracy"], label="Validation Top-3")
+    plt.title("Top-3 Accuracy Over Time", fontsize=12, fontweight="bold")
+    plt.xlabel("Epoch")
+    plt.ylabel("Top-3 Accuracy")
     plt.legend()
 else:
-    plt.plot(history.history['accuracy'], label='Training Accuracy')
-    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-    plt.title('Training vs Validation Accuracy', fontsize=12, fontweight='bold')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
+    plt.plot(history.history["accuracy"], label="Training Accuracy")
+    plt.plot(history.history["val_accuracy"], label="Validation Accuracy")
+    plt.title("Training vs Validation Accuracy", fontsize=12, fontweight="bold")
+    plt.xlabel("Epoch")
+    plt.ylabel("Accuracy")
     plt.legend()
 plt.grid(True, alpha=0.3)
 
@@ -437,15 +463,18 @@ for i in range(8):
     true_label = class_names[sample_true[i]]
     pred_label = class_names[sample_pred[i]]
     confidence = sample_proba[i][sample_pred[i]]
-    
+
     # Color code: green for correct, red for incorrect
-    color = 'green' if sample_true[i] == sample_pred[i] else 'red'
-    plt.title(f'True: {true_label}\nPred: {pred_label}\nConf: {confidence:.2f}', 
-              fontsize=9, color=color)
-    plt.axis('off')
+    color = "green" if sample_true[i] == sample_pred[i] else "red"
+    plt.title(
+        f"True: {true_label}\nPred: {pred_label}\nConf: {confidence:.2f}",
+        fontsize=9,
+        color=color,
+    )
+    plt.axis("off")
 
 plt.tight_layout()
-plt.savefig('cifar10_classification_results.png', dpi=300, bbox_inches='tight')
+plt.savefig("cifar10_classification_results.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 # Additional detailed visualizations
@@ -454,37 +483,37 @@ fig, axes = plt.subplots(2, 2, figsize=(15, 12))
 # Class-wise Accuracy
 class_accuracy = []
 for i in range(num_classes):
-    class_mask = (y_true == i)
+    class_mask = y_true == i
     if np.sum(class_mask) > 0:
         class_acc = accuracy_score(y_true[class_mask], y_pred[class_mask])
         class_accuracy.append(class_acc)
     else:
         class_accuracy.append(0)
 
-axes[0, 0].bar(range(num_classes), class_accuracy, color='skyblue', alpha=0.7)
-axes[0, 0].set_title('Per-Class Accuracy')
-axes[0, 0].set_xlabel('Class')
-axes[0, 0].set_ylabel('Accuracy')
+axes[0, 0].bar(range(num_classes), class_accuracy, color="skyblue", alpha=0.7)
+axes[0, 0].set_title("Per-Class Accuracy")
+axes[0, 0].set_xlabel("Class")
+axes[0, 0].set_ylabel("Accuracy")
 axes[0, 0].set_xticks(range(num_classes))
 axes[0, 0].set_xticklabels(class_names, rotation=45)
 
 # Prediction Confidence Distribution
-axes[0, 1].hist(np.max(y_pred_proba, axis=1), bins=50, alpha=0.7, color='lightcoral')
-axes[0, 1].set_title('Prediction Confidence Distribution')
-axes[0, 1].set_xlabel('Maximum Prediction Probability')
-axes[0, 1].set_ylabel('Frequency')
+axes[0, 1].hist(np.max(y_pred_proba, axis=1), bins=50, alpha=0.7, color="lightcoral")
+axes[0, 1].set_title("Prediction Confidence Distribution")
+axes[0, 1].set_xlabel("Maximum Prediction Probability")
+axes[0, 1].set_ylabel("Frequency")
 
 # Training Loss vs Validation Loss (zoomed)
-axes[1, 0].plot(history.history['loss'], label='Training Loss', linewidth=2)
-axes[1, 0].plot(history.history['val_loss'], label='Validation Loss', linewidth=2)
-axes[1, 0].set_title('Loss Curves (Detailed View)')
-axes[1, 0].set_xlabel('Epoch')
-axes[1, 0].set_ylabel('Loss')
+axes[1, 0].plot(history.history["loss"], label="Training Loss", linewidth=2)
+axes[1, 0].plot(history.history["val_loss"], label="Validation Loss", linewidth=2)
+axes[1, 0].set_title("Loss Curves (Detailed View)")
+axes[1, 0].set_xlabel("Epoch")
+axes[1, 0].set_ylabel("Loss")
 axes[1, 0].legend()
 axes[1, 0].grid(True, alpha=0.3)
 
 # Model Performance Summary
-axes[1, 1].axis('off')
+axes[1, 1].axis("off")
 summary_text = f"""
 Model Performance Summary
 ========================
@@ -499,11 +528,17 @@ Best Performing Class:
 Most Challenging Class:
 {class_names[np.argmin(f1)]} (F1: {np.min(f1):.3f})
 """
-axes[1, 1].text(0.1, 0.5, summary_text, fontsize=12, verticalalignment='center',
-                bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+axes[1, 1].text(
+    0.1,
+    0.5,
+    summary_text,
+    fontsize=12,
+    verticalalignment="center",
+    bbox=dict(boxstyle="round", facecolor="lightblue", alpha=0.8),
+)
 
 plt.tight_layout()
-plt.savefig('cifar10_detailed_analysis.png', dpi=300, bbox_inches='tight')
+plt.savefig("cifar10_detailed_analysis.png", dpi=300, bbox_inches="tight")
 plt.show()
 
 # =============================================================================
@@ -522,8 +557,12 @@ best_class_idx = np.argmax(f1)
 worst_class_idx = np.argmin(f1)
 
 print(f"\nCLASS PERFORMANCE INSIGHTS:")
-print(f"🏆 Best performing class: {class_names[best_class_idx]} (F1: {f1[best_class_idx]:.3f})")
-print(f"📉 Most challenging class: {class_names[worst_class_idx]} (F1: {f1[worst_class_idx]:.3f})")
+print(
+    f"🏆 Best performing class: {class_names[best_class_idx]} (F1: {f1[best_class_idx]:.3f})"
+)
+print(
+    f"📉 Most challenging class: {class_names[worst_class_idx]} (F1: {f1[worst_class_idx]:.3f})"
+)
 
 # Analyze confusion patterns
 print(f"\nCONFUSION ANALYSIS:")
@@ -531,7 +570,9 @@ for i in range(num_classes):
     confused_with = np.argsort(cm[i])[-2]  # Second highest (excluding self)
     if confused_with != i and cm[i][confused_with] > 0:
         confusion_rate = cm[i][confused_with] / np.sum(cm[i]) * 100
-        print(f"  {class_names[i]} often confused with {class_names[confused_with]} ({confusion_rate:.1f}%)")
+        print(
+            f"  {class_names[i]} often confused with {class_names[confused_with]} ({confusion_rate:.1f}%)"
+        )
 
 print(f"\nRECOMMENDATIONS FOR IMPROVEMENT:")
 print("1. MODEL ARCHITECTURE:")
@@ -562,32 +603,32 @@ print(f"\nSTEP 9: SAVING MODEL AND RESULTS")
 print("-" * 50)
 
 # Save the trained model
-model.save('cifar10_cnn_model.h5')
+model.save("cifar10_cnn_model.h5")
 print("✅ Model saved as 'cifar10_cnn_model.h5'")
 
 # Save training history
-np.save('training_history.npy', history.history)
+np.save("training_history.npy", history.history)
 print("✅ Training history saved as 'training_history.npy'")
 
 # Save predictions and metrics
 results = {
-    'test_accuracy': test_accuracy,
-    'test_loss': test_loss,
-    'predictions': y_pred,
-    'true_labels': y_true,
-    'class_names': class_names,
-    'confusion_matrix': cm,
-    'classification_report': classification_report(y_true, y_pred, 
-                                                  target_names=class_names, 
-                                                  output_dict=True)
+    "test_accuracy": test_accuracy,
+    "test_loss": test_loss,
+    "predictions": y_pred,
+    "true_labels": y_true,
+    "class_names": class_names,
+    "confusion_matrix": cm,
+    "classification_report": classification_report(
+        y_true, y_pred, target_names=class_names, output_dict=True
+    ),
 }
 
-np.save('model_results.npy', results)
+np.save("model_results.npy", results)
 print("✅ Results saved as 'model_results.npy'")
 
-print(f"\n" + "="*70)
+print(f"\n" + "=" * 70)
 print("🎉 DEEP LEARNING PROJECT COMPLETED SUCCESSFULLY!")
-print("="*70)
+print("=" * 70)
 print(f"📊 Final Model Performance: {test_accuracy*100:.2f}% accuracy")
 print(f"📁 Files created:")
 print(f"   • cifar10_cnn_model.h5 (trained model)")
@@ -604,7 +645,7 @@ print(f"\n🚀 Model is ready for deployment and further experimentation!")
 print(f"\nBONUS: EXAMPLE CODE FOR MAKING NEW PREDICTIONS")
 print("-" * 50)
 
-example_code = '''
+example_code = """
 # Load the saved model for future predictions
 from tensorflow.keras.models import load_model
 import numpy as np
@@ -620,7 +661,7 @@ model = load_model('cifar10_cnn_model.h5')
 
 print(f"Predicted class: {predicted_class}")
 print(f"Confidence: {confidence:.2f}")
-'''
+"""
 
 print(example_code)
 print("This completes the comprehensive deep learning image classification project!")
