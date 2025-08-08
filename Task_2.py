@@ -338,7 +338,7 @@ print(f"  Macro Recall: {macro_recall:.3f}")
 print(f"  Macro F1-Score: {macro_f1:.3f}")
 
 # =============================================================================
-# STEP 8: VISUALIZATION OF RESULTS
+# STEP 8: VISUALIZATION OF RESULTS (FIXED)
 # =============================================================================
 
 print(f"\nSTEP 7: CREATING VISUALIZATIONS")
@@ -348,11 +348,11 @@ print("-" * 50)
 plt.style.use('default')
 plt.rcParams['figure.figsize'] = (15, 10)
 
-# Create a comprehensive visualization
-fig = plt.figure(figsize=(20, 15))
+# Create a comprehensive visualization with 4x4 grid (FIXED)
+fig = plt.figure(figsize=(20, 16))
 
 # 1. Training History
-plt.subplot(3, 4, 1)
+plt.subplot(4, 4, 1)
 plt.plot(history.history['accuracy'], label='Training Accuracy', linewidth=2)
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy', linewidth=2)
 plt.title('Model Accuracy Over Time', fontsize=14, fontweight='bold')
@@ -361,7 +361,7 @@ plt.ylabel('Accuracy')
 plt.legend()
 plt.grid(True, alpha=0.3)
 
-plt.subplot(3, 4, 2)
+plt.subplot(4, 4, 2)
 plt.plot(history.history['loss'], label='Training Loss', linewidth=2, color='red')
 plt.plot(history.history['val_loss'], label='Validation Loss', linewidth=2, color='orange')
 plt.title('Model Loss Over Time', fontsize=14, fontweight='bold')
@@ -370,8 +370,8 @@ plt.ylabel('Loss')
 plt.legend()
 plt.grid(True, alpha=0.3)
 
-# 2. Confusion Matrix
-plt.subplot(3, 4, (3, 4))
+# 2. Confusion Matrix (spanning 2 positions)
+plt.subplot(4, 4, (3, 4))
 cm = confusion_matrix(y_true, y_pred)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
             xticklabels=class_names, yticklabels=class_names)
@@ -381,8 +381,8 @@ plt.ylabel('True Label')
 plt.xticks(rotation=45)
 plt.yticks(rotation=0)
 
-# 3. Per-class Performance Bar Chart
-plt.subplot(3, 4, (5, 6))
+# 3. Per-class Performance Bar Chart (spanning 2 positions)
+plt.subplot(4, 4, (5, 6))
 x_pos = np.arange(len(class_names))
 plt.bar(x_pos - 0.2, precision, 0.2, label='Precision', alpha=0.8)
 plt.bar(x_pos, recall, 0.2, label='Recall', alpha=0.8)
@@ -394,18 +394,45 @@ plt.xticks(x_pos, class_names, rotation=45)
 plt.legend()
 plt.grid(True, alpha=0.3)
 
-# 4. Sample Predictions Visualization
-plt.subplot(3, 4, (7, 8))
-# Select some test samples for visualization
+# 4. Learning Rate Schedule (if available)
+if 'lr' in history.history:
+    plt.subplot(4, 4, 7)
+    plt.plot(history.history['lr'])
+    plt.title('Learning Rate Schedule', fontsize=12, fontweight='bold')
+    plt.xlabel('Epoch')
+    plt.ylabel('Learning Rate')
+    plt.yscale('log')
+    plt.grid(True, alpha=0.3)
+
+# 5. Top-3 Accuracy (if available) or Validation Accuracy
+plt.subplot(4, 4, 8)
+if 'top_3_accuracy' in history.history:
+    plt.plot(history.history['top_3_accuracy'], label='Training Top-3')
+    if 'val_top_3_accuracy' in history.history:
+        plt.plot(history.history['val_top_3_accuracy'], label='Validation Top-3')
+    plt.title('Top-3 Accuracy Over Time', fontsize=12, fontweight='bold')
+    plt.xlabel('Epoch')
+    plt.ylabel('Top-3 Accuracy')
+    plt.legend()
+else:
+    plt.plot(history.history['accuracy'], label='Training Accuracy')
+    plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    plt.title('Training vs Validation Accuracy', fontsize=12, fontweight='bold')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.legend()
+plt.grid(True, alpha=0.3)
+
+# 6. Sample Predictions Visualization (FIXED - now uses positions 9-16)
 sample_indices = np.random.choice(len(x_test), 8, replace=False)
 sample_images = x_test[sample_indices]
 sample_true = y_test[sample_indices].flatten()
 sample_pred = y_pred[sample_indices]
 sample_proba = y_pred_proba[sample_indices]
 
-# Create a grid of sample predictions
+# Create a grid of sample predictions (FIXED)
 for i in range(8):
-    plt.subplot(3, 4, 9 + i)
+    plt.subplot(4, 4, 9 + i)  # Now positions 9-16 are valid in 4x4 grid
     plt.imshow(sample_images[i])
     true_label = class_names[sample_true[i]]
     pred_label = class_names[sample_pred[i]]
@@ -414,7 +441,7 @@ for i in range(8):
     # Color code: green for correct, red for incorrect
     color = 'green' if sample_true[i] == sample_pred[i] else 'red'
     plt.title(f'True: {true_label}\nPred: {pred_label}\nConf: {confidence:.2f}', 
-              fontsize=10, color=color)
+              fontsize=9, color=color)
     plt.axis('off')
 
 plt.tight_layout()
@@ -423,32 +450,6 @@ plt.show()
 
 # Additional detailed visualizations
 fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-
-# Learning Rate Schedule (if available)
-if 'lr' in history.history:
-    axes[0, 0].plot(history.history['lr'])
-    axes[0, 0].set_title('Learning Rate Schedule')
-    axes[0, 0].set_xlabel('Epoch')
-    axes[0, 0].set_ylabel('Learning Rate')
-    axes[0, 0].set_yscale('log')
-
-# Top-3 Accuracy (if available)
-if 'top_3_accuracy' in history.history:
-    axes[0, 1].plot(history.history['top_3_accuracy'], label='Training Top-3')
-    if 'val_top_3_accuracy' in history.history:
-        axes[0, 1].plot(history.history['val_top_3_accuracy'], label='Validation Top-3')
-    axes[0, 1].set_title('Top-3 Accuracy Over Time')
-    axes[0, 1].set_xlabel('Epoch')
-    axes[0, 1].set_ylabel('Top-3 Accuracy')
-    axes[0, 1].legend()
-else:
-    # Show validation accuracy if top-3 is not available
-    axes[0, 1].plot(history.history['accuracy'], label='Training Accuracy')
-    axes[0, 1].plot(history.history['val_accuracy'], label='Validation Accuracy')
-    axes[0, 1].set_title('Training vs Validation Accuracy')
-    axes[0, 1].set_xlabel('Epoch')
-    axes[0, 1].set_ylabel('Accuracy')
-    axes[0, 1].legend()
 
 # Class-wise Accuracy
 class_accuracy = []
@@ -460,18 +461,46 @@ for i in range(num_classes):
     else:
         class_accuracy.append(0)
 
-axes[1, 0].bar(range(num_classes), class_accuracy, color='skyblue', alpha=0.7)
-axes[1, 0].set_title('Per-Class Accuracy')
-axes[1, 0].set_xlabel('Class')
-axes[1, 0].set_ylabel('Accuracy')
-axes[1, 0].set_xticks(range(num_classes))
-axes[1, 0].set_xticklabels(class_names, rotation=45)
+axes[0, 0].bar(range(num_classes), class_accuracy, color='skyblue', alpha=0.7)
+axes[0, 0].set_title('Per-Class Accuracy')
+axes[0, 0].set_xlabel('Class')
+axes[0, 0].set_ylabel('Accuracy')
+axes[0, 0].set_xticks(range(num_classes))
+axes[0, 0].set_xticklabels(class_names, rotation=45)
 
 # Prediction Confidence Distribution
-axes[1, 1].hist(np.max(y_pred_proba, axis=1), bins=50, alpha=0.7, color='lightcoral')
-axes[1, 1].set_title('Prediction Confidence Distribution')
-axes[1, 1].set_xlabel('Maximum Prediction Probability')
-axes[1, 1].set_ylabel('Frequency')
+axes[0, 1].hist(np.max(y_pred_proba, axis=1), bins=50, alpha=0.7, color='lightcoral')
+axes[0, 1].set_title('Prediction Confidence Distribution')
+axes[0, 1].set_xlabel('Maximum Prediction Probability')
+axes[0, 1].set_ylabel('Frequency')
+
+# Training Loss vs Validation Loss (zoomed)
+axes[1, 0].plot(history.history['loss'], label='Training Loss', linewidth=2)
+axes[1, 0].plot(history.history['val_loss'], label='Validation Loss', linewidth=2)
+axes[1, 0].set_title('Loss Curves (Detailed View)')
+axes[1, 0].set_xlabel('Epoch')
+axes[1, 0].set_ylabel('Loss')
+axes[1, 0].legend()
+axes[1, 0].grid(True, alpha=0.3)
+
+# Model Performance Summary
+axes[1, 1].axis('off')
+summary_text = f"""
+Model Performance Summary
+========================
+Test Accuracy: {test_accuracy*100:.2f}%
+Training Epochs: {len(history.history['loss'])}
+Total Parameters: {total_params:,}
+Model Size: {total_params * 4 / 1024 / 1024:.2f} MB
+
+Best Performing Class:
+{class_names[np.argmax(f1)]} (F1: {np.max(f1):.3f})
+
+Most Challenging Class:
+{class_names[np.argmin(f1)]} (F1: {np.min(f1):.3f})
+"""
+axes[1, 1].text(0.1, 0.5, summary_text, fontsize=12, verticalalignment='center',
+                bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
 
 plt.tight_layout()
 plt.savefig('cifar10_detailed_analysis.png', dpi=300, bbox_inches='tight')
@@ -504,7 +533,7 @@ for i in range(num_classes):
         confusion_rate = cm[i][confused_with] / np.sum(cm[i]) * 100
         print(f"  {class_names[i]} often confused with {class_names[confused_with]} ({confusion_rate:.1f}%)")
 
-print(f"\nRECOMMENDations FOR IMPROVEMENT:")
+print(f"\nRECOMMENDATIONS FOR IMPROVEMENT:")
 print("1. MODEL ARCHITECTURE:")
 print("   • Consider deeper networks (ResNet, DenseNet) for better feature extraction")
 print("   • Experiment with attention mechanisms")
